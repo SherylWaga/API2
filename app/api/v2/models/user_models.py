@@ -20,10 +20,10 @@ class users():
 
          }
          query = """INSERT INTO users(firstname,lastname,email,phonenumber,username,password)
-          VALUES(%(firstname)s, %(lastname)s, %(email)s, %(phonenumber)s ,%(username)s ,%(password)s)"""
+          VALUES(%s, %s, %s, %s ,%s ,%s)"""
          cur=self.db.cursor()
          cur.execute(query,users)
          self.db.commit()
 
 
-         return users
+         
