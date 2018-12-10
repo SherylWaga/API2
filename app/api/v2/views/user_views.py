@@ -13,10 +13,7 @@ class Registration(Resource):
         phonenumber = request.get_json()['phonenumber']
         username =  request.get_json()['username']
         password = request.get_json()['password']
-
-        
-       
-
+            
         if not firstname or not lastname or not email or not phonenumber or not username or not password:
             return make_response(jsonify({"status":201, "data":[{"message":"cannot be empty"}]}), 201)
          
