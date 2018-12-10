@@ -1,30 +1,20 @@
-# config.py
-
 class Config(object):
     """
     Common configurations
     """
-    # Put any configurations here that are common across all environments
-
 
 class DevelopmentConfig(Config):
-    """
-    Development configurations
-    """
-
+    """Development configurations"""
+    db_url = "'ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
     DEBUG = True
-    SQLALCHEMY_ECHO = True
-
-
+    
 class ProductionConfig(Config):
-    """
-    Production configurations
-    """
-
+    """Production configurations"""
     DEBUG = False
 
 class TestingConfig(Config):
-    """Configurations for Testing, with a separate test database."""
+    """Testing configuration, with test database."""
+    test_url ="dbname='ireporter_test' host='localhost' port='5432' user='postgres' password='pycoders'"
     TESTING = True
     DEBUG = True
 
