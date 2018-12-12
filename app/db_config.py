@@ -15,6 +15,11 @@ def init_db():
     return conn
 
 
+def init_test_db():
+    conn = connection(test_url)
+    return conn  
+
+
 def create_tables():
     users = """CREATE TABLE IF NOT EXISTS users(
     id serial PRIMARY KEY NOT NULL,
@@ -27,7 +32,19 @@ def create_tables():
     registered timestamp with time zone DEFAULT('now'::text)::date NOT NULL,
     isadmin VARCHAR(130)  DEFAULT 'false' NOT NULL)"""
 
-    queries = [users]
+    incidents = """CREATE TABLE IF NOT EXISTS incidents(
+            incident_id serial PRIMARY KEY NOT NULL,
+            created_on timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
+            created_by VARCHAR(150)  NOT NULL,
+            title VARCHAR(140),
+            comment VARCHAR(130),
+            instance_type VARCHAR(100) NOT NULL,
+            location VARCHAR(120),
+            status VARCHAR(100) DEFAULT 'under_investigation' NOT NULL,
+            images bytea,
+            videos bytea
+            )"""
+    queries = [users, incidents]
 
     conn = connection(url)
     cur = conn.cursor()
