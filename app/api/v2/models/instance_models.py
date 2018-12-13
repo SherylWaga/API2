@@ -64,4 +64,28 @@ class Instances():
         if password == value[6]:
             return True
         return False
+
+    def get_one(self, instance_id):
+        con = self.db
+        cur= con.cursor()
+        cur.execute("SELECT incident_id, created_on, created_by, title, comment, instance_type,"
+                     " location, status FROM incidents WHERE incident_id='" + str(instance_id) + "'")
+        data = cur.fetchall()
+        response = []
+        for item, items in enumerate(data):
+            incident_id, created_on, created_by, title, comment, instance_type, location, status = items
+            value= dict(
+                incident_id_id=int(incident_id),
+                created_on=created_on,
+                created_by=created_by,
+                title=title,
+                comment=comment,
+                instance_type=instance_type,
+                location=location,
+                status=status
+
+            )
+            response.append(value)
+        return response
+
      
