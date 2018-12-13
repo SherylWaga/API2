@@ -31,7 +31,7 @@ class Create_incident(Resource, Instances):
                     {"message": "successfully created"}]}), 201)
 
     def get(self):
-        
+        """GET all incidents"""
         rsp = Instances().get_all()
         return make_response(jsonify({
             "status": 200,
@@ -40,3 +40,18 @@ class Create_incident(Resource, Instances):
         }), 200)            
  
 
+class Specific(Resource, Instances):
+   
+    def get(self, instance_id):      
+        rsp = Instances().get_one(instance_id)
+        if not rsp:
+            return make_response(jsonify({
+                "status": 404,
+                "message": "Record not found."
+            }), 404)
+        return make_response(jsonify({
+            "status": 200,
+            "data": rsp,
+            "message": "Record fetched successfully"
+        }), 200)
+             
