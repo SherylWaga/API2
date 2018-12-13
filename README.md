@@ -39,5 +39,15 @@ You can run the urls on postman
          <td>/api/v2/incidents </td>
         <td>Create an Instance i.e Redflag or Intervention</td>
     </tr>
+     <tr>
+        <td>GET</td>
+         <td>/api/v2/incidents </td>
+        <td>View all instances i.e Redflags and Interventions</td>
+    </tr>
+     <tr>
+        <td>GET</td>
+         <td>/api/v2/incidents/1 </td>
+        <td>View a specific instance i.e Redflag or Intervention</td>
+    </tr>
    
 </table>
