@@ -54,4 +54,19 @@ class Specific(Resource, Instances):
             "data": rsp,
             "message": "Record fetched successfully"
         }), 200)
+    
+    def delete(self,instance_id):
+        """Delete existing record"""
+        rsp = Instances().erase_instance(instance_id)
+        if rsp:
+            return make_response(jsonify({
+                "status": 200,
+                "message": "sucessfully deleted"
+            }), 200) 
+        return make_response(jsonify({
+            "status": 404,
+           
+            "message": "Record does not exist"
+        }),400)           
+ 
              

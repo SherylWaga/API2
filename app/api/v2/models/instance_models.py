@@ -72,5 +72,12 @@ class Instances():
             )
             response.append(value)
         return response
-
+    
+    def erase_instance(self, instance_id):
+        con = self.db
+        cur = con.cursor()
+        cur.execute(
+            "DELETE FROM incidents WHERE incident_id='" + str(instance_id) + "'")
+        con.commit()
+        return True
      
