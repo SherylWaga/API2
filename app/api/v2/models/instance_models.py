@@ -6,21 +6,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "shewags"
 
 
-def serialiser_incident(incidents):
-    return dict(
-        incident_id=incidents[0],
-        created_on=incidents[1],
-        created_by=incidents[2],
-        title=incidents[3],
-        comment=incidents[4],
-        instance_type=incidents[5],
-        location=incidents[6],
-        status=incidents[7],
-        image=incidents[8],
-        video=incidents[9]
-        )
-
-
 class Instances():
     def __init__(self):
         self.db = init_db()
@@ -43,28 +28,28 @@ class Instances():
         return incident
 
     def get_all(self):
-       
-        cur = self.db.cursor()
+        con = self.db
+        cur = con.cursor()
         cur.execute("SELECT * FROM incidents")
-        incidents = cur.fetchall()
-        new_incidents = []
-        for record in incidents:
-            new_incidents.append(serialiser_incident(record))
-           
-            return new_incidents
+        data = cur.fetchall()
+        response = []
+        for item , items in enumerate(data):
+            incident_id, created_on, created_by, title, comment, instance_type, location, status, images, videos = items
+            value= dict(
+                incident_id_id=int(incident_id),
+                created_on=created_on,
+                created_by=created_by,
+                title=title,
+                comment=comment,
+                instance_type=instance_type,
+                location=location,
+                status=status
+
+            )
+            response.append(value)
+        return response
 
        
-    def fetch_instance(self):
-        cur = self.db.cursor()
-        username = request.json.get('username')
-        password = request.json.get('password')
-        cur.execute("""SELECT * FROM users WHERE username = '%s'""" % (username))
-        data = cur.fetchone()
-        value = list(data)
-        if password == value[6]:
-            return True
-        return False
-
     def get_one(self, instance_id):
         con = self.db
         cur= con.cursor()
