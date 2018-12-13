@@ -1,9 +1,14 @@
 
-from flask import jsonify, json, request, make_response
-from flask_restful import Resource
+from flask import Flask, jsonify, json, request, make_response
+from flask_restful import Resource ,Api
 
 # local imports
 from app.api.v2.models.user_models import users
+app = Flask(__name__)
+
+api = Api(app) 
+app.config['JWT_SECRET_KEY'] = 'WAGS'
+
 
 
 class Registration(Resource):
@@ -43,7 +48,12 @@ class Login (Resource):
                 return make_response(jsonify({"status": 201, "data": [
                     {"message": "successfully logged in"}]
                     }), 201)
+                access_token = create_access_token(identity=username)
+                return jsonify(access_token=access_token)
+                con.commit()
 
             return make_response(jsonify({"status": 201, "data": [
                     {"message": "Please sign up or check log in details"}]
                     }), 201)
+            
+

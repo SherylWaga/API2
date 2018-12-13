@@ -1,9 +1,8 @@
 from flask import Flask, request
+from flask_jwt_extended import JWTManager
 # local imports
 
 from ....db_config import init_db
-app = Flask(__name__)
-app.config['SECRET_KEY'] = "shewags"
 
 
 class users():

@@ -29,6 +29,14 @@ class Create_incident(Resource, Instances):
             return make_response(jsonify(
                 {"status": 201, "data": [
                     {"message": "successfully created"}]}), 201)
+
+    def get(self):
+        
+        rsp = Instances().get_all()
+        return make_response(jsonify({
+            "status": 200,
+            "data": rsp,
+            "message": "All incidents fetched successfully."
+        }), 200)            
  
 
-             
