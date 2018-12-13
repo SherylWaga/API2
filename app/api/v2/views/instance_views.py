@@ -1,5 +1,8 @@
 from flask_restful import Resource
 from flask import Flask, jsonify, request, make_response
+from flask_jwt_extended import (create_access_token, create_refresh_token,
+                                jwt_required, jwt_refresh_token_required,
+                                get_jwt_identity, get_raw_jwt)
 from app.api.v2.models.instance_models import Instances
 
 
@@ -41,7 +44,7 @@ class Create_incident(Resource, Instances):
  
 
 class Specific(Resource, Instances):
-   
+    @jwt_required
     def get(self, instance_id):      
         rsp = Instances().get_one(instance_id)
         if not rsp:
@@ -55,6 +58,7 @@ class Specific(Resource, Instances):
             "message": "Record fetched successfully"
         }), 200)
     
+    @jwt_required
     def delete(self,instance_id):
         """Delete existing record"""
         rsp = Instances().erase_instance(instance_id)

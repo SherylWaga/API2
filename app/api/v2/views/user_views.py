@@ -1,7 +1,7 @@
 
 from flask import Flask, jsonify, json, request, make_response
 from flask_restful import Resource ,Api
-
+from flask_jwt_extended import (JWTManager,jwt_required, create_access_token,get_jwt_identity)
 # local imports
 from app.api.v2.models.user_models import users
 app = Flask(__name__)
@@ -43,14 +43,15 @@ class Registration(Resource):
 
 class Login (Resource):
         def post(self):
-
+            username = request.json.get('username')
+            
             if users().fetch_user():
-                return make_response(jsonify({"status": 201, "data": [
-                    {"message": "successfully logged in"}]
-                    }), 201)
+             
                 access_token = create_access_token(identity=username)
-                return jsonify(access_token=access_token)
-                con.commit()
+                response=jsonify({'token':access_token,
+                        "message":"Welcome " + username,
+                        "status_code":201})
+                return response
 
             return make_response(jsonify({"status": 201, "data": [
                     {"message": "Please sign up or check log in details"}]
