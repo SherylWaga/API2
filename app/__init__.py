@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint
-
+from flask_jwt_extended import (JWTManager)
 #local imports
 from instance.config import app_config
 from .db_config import create_tables
@@ -12,5 +12,7 @@ def create_app(config_name='development'):
     app.config.from_pyfile('config.py')
     app.register_blueprint(v2)
     create_tables()
+    app.config['JWT_SECRET_KEY'] = 'WAGS'
+    jwt = JWTManager(app)
    
     return app
