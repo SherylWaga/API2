@@ -49,5 +49,10 @@ You can run the urls on postman
          <td>/api/v2/incidents/1 </td>
         <td>View a specific instance i.e Redflag or Intervention</td>
     </tr>
+    <tr>
+        <td>DELETE</td>
+         <td>/api/v2/incidents/1 </td>
+        <td>Delete a specific instance i.e Redflag or Intervention</td>
+    </tr>
    
 </table>
