@@ -3,14 +3,16 @@ from flask import Flask, jsonify, request, make_response
 from flask_jwt_extended import (create_access_token, create_refresh_token,
                                 jwt_required, jwt_refresh_token_required,
                                 get_jwt_identity, get_raw_jwt)
+
 from app.api.v2.models.instance_models import Instances
+from ....db_config import init_db
 
 
 app = Flask(__name__)
 
 
 class Create_incident(Resource, Instances):
-
+    @jwt_required
     def post(self):
             title = request.get_json()['title']
             comment = request.get_json()['comment']
@@ -18,7 +20,7 @@ class Create_incident(Resource, Instances):
             location = request.get_json()['location']
             images = request.get_json()['images']
             videos = request.get_json()['videos']
-            created_by = request.get_json()['created_by']
+            created_by = get_jwt_identity()
         
             errors = {}
             for key, value in request.get_json().items():
@@ -27,7 +29,10 @@ class Create_incident(Resource, Instances):
             if errors:
                 return make_response(jsonify(
                    {"status": 400, "data": errors}), 400)
-
+            if  Instances().check_comment(comment):
+                return make_response(jsonify(
+                {"status": 400, "data": [
+                    {"message": "Record already exists"}]}), 400) 
             Instances().create_incident(title, comment, instance_type, location, images, videos,  created_by)
             return make_response(jsonify(
                 {"status": 201, "data": [
@@ -45,32 +50,43 @@ class Create_incident(Resource, Instances):
 
 class Specific(Resource, Instances):
     @jwt_required
-    def get(self, instance_id):      
-        rsp = Instances().get_one(instance_id)
+    def get(self, _id):      
+        rsp = Instances().get_one(_id)
+        if rsp:
+                
+            return make_response(jsonify({
+                "status": 200,
+                "data": rsp,
+                "message": "Record fetched successfully"
+            }), 200)
+        return make_response(jsonify({
+                "status": 404,
+                "message": "Record not found."
+            }), 404)
+    
+    @jwt_required
+    
+    def delete(self,_id):
+        """Delete existing record"""
+        rsp = Instances().get_one(_id)
         if not rsp:
             return make_response(jsonify({
                 "status": 404,
                 "message": "Record not found."
             }), 404)
-        return make_response(jsonify({
-            "status": 200,
-            "data": rsp,
-            "message": "Record fetched successfully"
-        }), 200)
-    
-    @jwt_required
-    def delete(self,instance_id):
-        """Delete existing record"""
-        rsp = Instances().erase_instance(instance_id)
-        if rsp:
+        resp = Instances().erase_instance(_id)
+        if resp :
             return make_response(jsonify({
-                "status": 200,
-                "message": "sucessfully deleted"
-            }), 200) 
-        return make_response(jsonify({
-            "status": 404,
-           
-            "message": "Record does not exist"
-        }),400)           
- 
-             
+                    "status": 200,
+                    "message": "sucessfully deleted"
+                }), 200)
+            
+# class Admin(self):
+#     def delete(self_id):
+#         if get_jwt_identity = 'admin' :
+        
+        
+      
+        
+        
+        
