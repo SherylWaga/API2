@@ -1,14 +1,13 @@
 
 from flask import Flask, jsonify, json, request, make_response
-from flask_restful import Resource ,Api
-from flask_jwt_extended import (JWTManager,jwt_required, create_access_token,get_jwt_identity)
+from flask_restful import Resource, Api
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 # local imports
 from app.api.v2.models.user_models import users
 app = Flask(__name__)
 
 api = Api(app) 
 app.config['JWT_SECRET_KEY'] = 'WAGS'
-
 
 
 class Registration(Resource):
@@ -48,11 +47,11 @@ class Login (Resource):
             username = request.json.get('username')
             password = request.json.get('password')
             if users().fetch_user(username, password):
-             
+
                 access_token = create_access_token(identity=username)
-                response = jsonify({'token':access_token,
-                        "message":"Welcome " + username,
-                        "status_code":201})
+                response = jsonify({'token': access_token,
+                                   "message": "Welcome " + username,
+                                   "status_code": 201})
                 return response
 
             return make_response(jsonify({"status": 201, "data": [
@@ -67,4 +66,3 @@ class Login (Resource):
         @jwt_required
         def current_logged(self):
             return True
-

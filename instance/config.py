@@ -9,9 +9,9 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     """Development configurations"""
-    DATABASE_URL ="dbname='ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
+    DATABASE_URL = "dbname='ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
     DEBUG = True
-    
+
 
 class ProductionConfig(Config):
     """Production configurations"""
@@ -22,7 +22,7 @@ class TestingConfig(Config):
     """Testing configuration, with test database."""
     TESTING = True
     DEBUG = True
-    DATABASE_URL ="dbname='ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
+    DATABASE_URL = "dbname='ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
 
 app_config = {
     'development': DevelopmentConfig,

@@ -88,8 +88,7 @@ class Specific(Resource, Instances):
     def put(self,_id):
         """Edit existing record"""
         if Login().current_logged(): 
-            
-            location=request.json.get('location')
+            location = request.json.get('location')
             comment = request.json.get('comment')        
             if Instances().get_by_id(_id):
                 return jsonify({'status_code': 404,
@@ -104,12 +103,4 @@ class Specific(Resource, Instances):
                     'message':'successfully updated',
 
                 })
-            
             return resp
-
-         
-        
-      
-        
-        
-        

@@ -27,7 +27,7 @@ def create_tables():
     username VARCHAR(140) NOT NULL,
     password VARCHAR(140)NOT NULL,
     registered timestamp with time zone DEFAULT('now'::text)::date NOT NULL,
-    isadmin VARCHAR(130)  DEFAULT 'true' NOT NULL)"""
+    isadmin VARCHAR(130)  DEFAULT 'false' NOT NULL)"""
 
     incidents = """CREATE TABLE IF NOT EXISTS incidents(
             incident_id serial PRIMARY KEY NOT NULL,
@@ -51,6 +51,28 @@ def create_tables():
     return queries
 
 
+def admin():
+        conn = connection(url)
+        cur = conn.cursor()
+
+        firstname = 'jane'
+        lastname = 'ranger'
+        email = 'admin@gmail.com'
+        phonenumber = '0778096758'
+        username = 'admin'
+        password = 'admin'
+        isadmin = True
+
+        sql = "SELECT * FROM users WHERE username = %s"
+        cur.execute(sql, (username,))
+        data = cur.fetchone()
+
+        if not data:
+            sql = """INSERT INTO users(firstname, lastname, email, phonenumber, username, password, isadmin)\
+                        VALUES(%s, %s, %s, %s, %s, %s, %s)"""
+            cur.execute(sql, (firstname, lastname, email, phonenumber, username, password, isadmin))
+            conn.commit()
+
+
 def tearDown():
-  
     pass

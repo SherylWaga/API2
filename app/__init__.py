@@ -1,18 +1,20 @@
-from flask import Flask, Blueprint 
+from flask import Flask, Blueprint
 from flask_jwt_extended import (JWTManager)
 from flask import Flask, jsonify, request, make_response
-#local imports
+# local imports
 from instance.config import app_config
-from .db_config import create_tables
+from .db_config import create_tables, admin
 from .api.v2 import version_2 as v2
 
+
 def create_app(config_name='development'):
-    app = Flask(__name__, instance_relative_config = True)
+    app = Flask(__name__, instance_relative_config=True)
     app.url_map.strict_slashes = False
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     app.register_blueprint(v2)
     create_tables()
+    admin()
     app.config['JWT_SECRET_KEY'] = 'WAGS'
     jwt = JWTManager(app)
 
@@ -20,7 +22,7 @@ def create_app(config_name='development'):
     def forbidden(error):
         return make_response(jsonify(
             {"message": "forbidden"}), 403)
-    
+
     @app.errorhandler(500)
     def internal_server_error(error):
         return make_response(jsonify(

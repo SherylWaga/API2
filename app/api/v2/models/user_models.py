@@ -5,12 +5,13 @@ from flask_jwt_extended import JWTManager
 from ....db_config import init_db
 app = Flask(__name__)
 
+
 class users():
     def __init__(self):
         self.db = init_db()
 
     def save_user(self, firstname, lastname, email, phonenumber, username, password):
-       
+
         users = {
             'firstname': firstname,
             'lastname': lastname,
@@ -29,10 +30,8 @@ class users():
 
     def fetch_user(self, username, password):
         cur = self.db.cursor()
-       
         cur.execute("""SELECT * FROM users WHERE username = '%s'"""%(username))
         data = cur.fetchone()
-     
         value = list(data)
         if password == value[6]:
             return True
@@ -48,3 +47,11 @@ class users():
         return False
 
 
+class UsersRole():
+
+        def user_role(self):
+            cur = self.db.cursor()
+            cur.execute("SELECT username FROM users WHERE is_admin = 'True'")
+            data = curr.fetchone()
+            for item in data:
+                return item
