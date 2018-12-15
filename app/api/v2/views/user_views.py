@@ -58,5 +58,13 @@ class Login (Resource):
             return make_response(jsonify({"status": 201, "data": [
                     {"message": "Please sign up or check log in details"}]
                     }), 201)
-            
+
+        @jwt_required
+        def current_user(self):
+            current = get_jwt_identity()
+            return current
+
+        @jwt_required
+        def current_logged(self):
+            return True
 
