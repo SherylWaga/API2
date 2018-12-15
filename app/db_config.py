@@ -27,7 +27,7 @@ def create_tables():
     username VARCHAR(140) NOT NULL,
     password VARCHAR(140)NOT NULL,
     registered timestamp with time zone DEFAULT('now'::text)::date NOT NULL,
-    isadmin VARCHAR(130)  DEFAULT 'false' NOT NULL)"""
+    isadmin VARCHAR(130)  DEFAULT 'true' NOT NULL)"""
 
     incidents = """CREATE TABLE IF NOT EXISTS incidents(
             incident_id serial PRIMARY KEY NOT NULL,
@@ -52,8 +52,5 @@ def create_tables():
 
 
 def tearDown():
-    # con = self.db
-    # # cur = con.cursor()
-    # # cur.execute("DROP TABLE users")
-    # # con.commit()
+  
     pass
