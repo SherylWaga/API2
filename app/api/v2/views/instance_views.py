@@ -6,7 +6,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token,
 
 from app.api.v2.models.instance_models import Instances
 from ....db_config import init_db
-
+from ..views.user_views import Login
 
 app = Flask(__name__)
 
@@ -68,23 +68,46 @@ class Specific(Resource, Instances):
     
     def delete(self,_id):
         """Delete existing record"""
-        rsp = Instances().get_one(_id)
-        if not rsp:
-            return make_response(jsonify({
-                "status": 404,
-                "message": "Record not found."
-            }), 404)
-        resp = Instances().erase_instance(_id)
-        if resp :
-            return make_response(jsonify({
-                    "status": 200,
-                    "message": "sucessfully deleted"
-                }), 200)
+        if Login().current_logged():         
+            if Instances().get_by_id(_id):
+                return jsonify({'status_code': 404,
+                                'message': ' Record does not exist'})
+            if not Instances().verification(_id):
+                return jsonify({'status_code': 403,
+                                'message': 'You can only delete your records.'})
+            Instances().erase_instance(_id)
+            resp = jsonify(
+                {
+                    'status_code':200,
+                    'message':'successfully deleted',
+
+                })
+            response.status_code = 200
+            return resp
+
+    def put(self,_id):
+        """Edit existing record"""
+        if Login().current_logged(): 
             
-# class Admin(self):
-#     def delete(self_id):
-#         if get_jwt_identity = 'admin' :
-        
+            location=request.json.get('location')
+            comment = request.json.get('comment')        
+            if Instances().get_by_id(_id):
+                return jsonify({'status_code': 404,
+                                'message': ' Record does not exist'})
+            if not Instances().verification(_id):
+                return jsonify({'status_code': 403,
+                                'message': 'You can only edit your records.'})
+            Instances().edit_incident, (_id)
+            resp = jsonify(
+                {
+                    'status_code':200,
+                    'message':'successfully updated',
+
+                })
+            
+            return resp
+
+         
         
       
         
