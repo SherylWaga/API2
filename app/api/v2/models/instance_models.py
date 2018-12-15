@@ -117,10 +117,10 @@ class Instances():
         if str(_id) in value:
             return True
 
-    def edit_incident(self, id, comment, location):
+    def edit_incident(self, _id, comment, location):
         current_user = Login().current_user()
         con = self.db
-        cur= con.cursor()
+        cur = con.cursor()
         new_value = {  
             'comment': comment,
             'location': location
@@ -128,5 +128,5 @@ class Instances():
         query = "UPDATE incidents SET comment=%(comment)s," \
                 "location=%(location)s WHERE incident_id='" + str(_id) + "' AND created_by='" + str(
             current_user) + "'"
-        cur.execute(query)
+        cur.execute(query, new_value)
         con.commit()
