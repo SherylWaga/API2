@@ -1,10 +1,7 @@
 import psycopg2
 import os
 
-url = os.getenv('DATABASE_URL')
-test_url = os.getenv('TESTDATABASE_URL')
-
-
+url ="dbname='ireporter' host='localhost' port='5432' user='postgres' password='pycoders'"
 def connection(url):
     conn = psycopg2.connect(url)
     return conn
@@ -54,5 +51,9 @@ def create_tables():
     return queries
 
 
-def destroy_table():
+def tearDown():
+    # con = self.db
+    # # cur = con.cursor()
+    # # cur.execute("DROP TABLE users")
+    # # con.commit()
     pass

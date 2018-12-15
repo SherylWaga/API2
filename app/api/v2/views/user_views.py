@@ -22,7 +22,7 @@ class Registration(Resource):
             phonenumber = request.get_json()['phonenumber']
             username = request.get_json()['username']
             password = request.get_json()['password']
-
+            
             errors = {}
             for key, value in request.get_json().items():
                 if not value.strip():
@@ -30,11 +30,13 @@ class Registration(Resource):
             if errors:
                 return make_response(jsonify(
                    {"status": 400, "data": errors}), 400)
-
+            if users().verify_membership(username, email):
+                return make_response(jsonify(
+                   {"status": 400, "message": "user already exists"}), 400)
             users().save_user(firstname, lastname, email, phonenumber, username, password)
             return make_response(jsonify(
-                {"status": 201, "data": [
-                    {"message": "Registration successful"}]}), 201)
+                   {"status": 200, "data": [
+                    {"message": "Registration successful"}]}), 200)
         except:
             return make_response(jsonify(
                 {"status": 400, "data": [
@@ -44,11 +46,11 @@ class Registration(Resource):
 class Login (Resource):
         def post(self):
             username = request.json.get('username')
-            
-            if users().fetch_user():
+            password = request.json.get('password')
+            if users().fetch_user(username, password):
              
                 access_token = create_access_token(identity=username)
-                response=jsonify({'token':access_token,
+                response = jsonify({'token':access_token,
                         "message":"Welcome " + username,
                         "status_code":201})
                 return response

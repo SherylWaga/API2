@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager
 # local imports
 
 from ....db_config import init_db
-
+app = Flask(__name__)
 
 class users():
     def __init__(self):
@@ -27,23 +27,23 @@ class users():
         self.db.commit()
         return users
 
-    def fetch_user(self):
+    def fetch_user(self, username, password):
         cur = self.db.cursor()
-        username = request.json.get('username')
-        password = request.json.get('password')
-        cur.execute("""SELECT * FROM users WHERE username = '%s'""" % (username))
+       
+        cur.execute("""SELECT * FROM users WHERE username = '%s'"""%(username))
         data = cur.fetchone()
+     
         value = list(data)
         if password == value[6]:
             return True
         return False
 
-    def verify_membership(self):
+    def verify_membership(self, username, email):
         cur = self.db.cursor()
-        cur.execute("""SELECT * FROM users WHERE username = '%s'""" % (username))
-        data = cur.fetchone()
-        value = list(data)
-        if password == value[6]:
+        cur.execute("SELECT * FROM users")
+        data = cur.fetchall()
+        value2 = str(data)
+        if username in value2 or email in value2:
             return True
         return False
 
