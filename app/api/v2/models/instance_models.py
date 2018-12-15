@@ -1,9 +1,9 @@
 from flask import Flask, request
 # local imports
-from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                jwt_required, jwt_refresh_token_required,
-                                get_jwt_identity, get_raw_jwt)
+
 from ....db_config import init_db
+from ..views.user_views import Login
+
 
 
 
@@ -78,16 +78,13 @@ class Instances():
         return response
     
     def erase_instance(self, _id):
+        current_user = Login().current_user()
         con = self.db
         cur = con.cursor()
-        cur.execute("SELECT * FROM incidents")
-        data = cur.fetchall()
-        value = str(data)
-        if _id in value:
-            cur.execute(
-                "DELETE FROM incidents WHERE incident_id='" + str(_id) + "'")
-            con.commit()
-        return "successfully deleted"
+        cur.execute(
+            "DELETE FROM incidents WHERE incident_id='" + str(_id) + "' AND created_by='" + str(current_user) + "'")
+        con.commit()
+      
         
 
     def check_comment(self, comment):
@@ -99,20 +96,37 @@ class Instances():
             return True
        return False
 
-    def verify_action(self):
-        cur = self.db.cursor()
-       
-        cur.execute("SELECT * FROM incidents")
-        data = cur.fetchone()
-       
-        value = list(data)
-    
-        return value[2]
 
     def get_by_id(self, _id):
         con = self.db
         cur = con.cursor()
-        cur.execute(
-            "SELECT * FROM incidents WHERE incident_id='" + str(_id) + "'")
-        data = cur.fetchone()
+        cur.execute("SELECT created_by FROM incidents WHERE incident_id='" + _id + "'")
+        data = cur.fetchall()
+        data_list = list(data)
+        if len(data_list) == 0:
+            return True
+     
         
+    def verification(self, _id):
+        current_user = Login().current_user()
+        con = self.db
+        cur = con.cursor()
+        cur.execute("SELECT incident_id FROM incidents WHERE created_by='" + current_user + "'")
+        data = cur.fetchall()
+        value = str(data)
+        if str(_id) in value:
+            return True
+
+    def edit_incident(self, id, comment, location):
+        current_user = Login().current_user()
+        con = self.db
+        cur= con.cursor()
+        new_value = {  
+            'comment': comment,
+            'location': location
+        }
+        query = "UPDATE incidents SET comment=%(comment)s," \
+                "location=%(location)s WHERE incident_id='" + str(_id) + "' AND created_by='" + str(
+            current_user) + "'"
+        cur.execute(query)
+        con.commit()
