@@ -1,11 +1,12 @@
 from flask import Flask, request
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
+from flask_bcrypt import Bcrypt
 # local imports
 
 from ....db_config import init_db
 app = Flask(__name__)
-
+bcrypt=Bcrypt(app)
 
 class users():
     def __init__(self):
@@ -17,7 +18,7 @@ class users():
             'firstname': firstname,
             'lastname': lastname,
             'email': email,
-            'phonenumber': phonenumber,
+            'phonenumber': bcrypt.generate_password_hash(password).decode('utf-8'),
             'username': username,
             'password': password
 
@@ -29,24 +30,44 @@ class users():
         self.db.commit()
         return users
 
-    def fetch_user(self, username, password):
+    def fetch_user(self):
         cur = self.db.cursor()
+        username = request.json.get('username')
         cur.execute("""SELECT * FROM users WHERE username = '%s'"""%(username))
         data = cur.fetchone()
         value = list(data)
-        if password == value[6]:
+        if username == value[5]:
             return True
         return False
+
+    
     #avoid duplicate entries
-    def verify_membership(self, username, email):
+    def verify_membership(self, username, email, phonenumber, password):
         cur = self.db.cursor()
         cur.execute("SELECT * FROM users")
         data = cur.fetchall()
         value2 = str(data)
-        if username in value2 or email in value2:
+        if username in value2 or email in value2 or phonenumber in value2 or password in value2:
             return True
-        return False
+        
 
+    def validate_pass(self):
+        con = self.db
+        cur = con.cursor()
+        username = request.json.get('username')
+        password = request.json.get('password')
+        cur.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
+        data = cur.fetchone()
+        convert_data = list(data)
+        pword = convert_data[4]
+        if bcrypt.check_password_hash(pword, password):
+            return True
+        
+    def validate_email(self):
+        email = request.json.get('email')
+        symbol='@'
+        if symbol not in email:
+            return True
 
 class UsersRole(users):
         #verify admin
