@@ -126,22 +126,34 @@ class Instances():
         if str(_id) in value:
             return True
 
-    def edit_incident(self, _id, comment, location):
+    def edit_incident(self, _id):
         current_user = Login().current_user()
         con = self.db
         cur = con.cursor()
-        new_value = {  
+        payload = { 
             'comment': comment,
             'location': location
         }
-      
-        cur.execute("""UPDATE incidents SET comment=%s,location=%s WHERE incident_id=%s AND created_by=%s""", (comment,location, _id, current_user))
-        con.commit()
+        query = "UPDATE incidents SET comment=%(comment)s," \
+                "location=%(location)s WHERE incident_id='" + str(_id) + "' AND created_by='" + str(
+            current_user) + "'"
+        cur.execute(query, payload)
+       
     #check status
     def check_status(self):
         con = self.db
         cur = con.cursor()
-        cur.execute("SELECT status FROM incidents status='draft'")
+        cur.execute("SELECT status FROM incidents WHERE status='draft'")
         data = cur.fetchone()
         
         return True
+    
+    #re-update of already existing status
+    def duplicate_update(self, _id, status):
+        con = self.db
+        cur = con.cursor()
+        cur.execute("SELECT status FROM incidents WHERE status=%s",(_id))
+        data = cur.fetchone()
+        for item in data:
+            if item == status:
+                return True

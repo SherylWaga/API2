@@ -37,7 +37,7 @@ def create_tables():
             comment VARCHAR(130),
             instance_type VARCHAR(100) NOT NULL,
             location VARCHAR(120),
-            status VARCHAR(100) DEFAULT 'under_investigation' NOT NULL,
+            status VARCHAR(100) DEFAULT 'draft' NOT NULL,
             images bytea,
             videos bytea
             )"""
