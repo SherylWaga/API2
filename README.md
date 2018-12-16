@@ -47,12 +47,22 @@ You can run the urls on postman
      <tr>
         <td>GET</td>
          <td>/api/v2/incidents/1 </td>
-        <td>View a specific instance i.e Redflag or Intervention</td>
+        <td>View a specific incident i.e Redflag or Intervention</td>
     </tr>
     <tr>
         <td>DELETE</td>
          <td>/api/v2/incidents/1 </td>
-        <td>Delete a specific instance i.e Redflag or Intervention</td>
+        <td>Delete a specific incident i.e Redflag or Intervention</td>
+    </tr>
+    <tr>
+        <td>PUT</td>
+         <td>/api/v2/incidents/1 </td>
+        <td>Edit  a specific incident i.e Redflag or Intervention location or comment</td>
+    </tr>
+    <tr>
+        <td>PATCH</td>
+         <td>/api/v2/incidents/1 </td>
+        <td>An admin user can edit a specific incident i.e Redflag or Intervention status</td>
     </tr>
    
 </table>
