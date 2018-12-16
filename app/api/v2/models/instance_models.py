@@ -85,7 +85,16 @@ class Instances():
             "DELETE FROM incidents WHERE incident_id='" + str(_id) + "' AND created_by='" + str(current_user) + "'")
         con.commit()
       
-        
+    def edit_by_admin(self, _id, status):
+        con = self.db
+        cur = con.cursor()
+        new_value = {  
+            'status': status
+                    }
+
+        cur.execute("""UPDATE incidents SET status=%s WHERE incident_id=%s""", (status, _id))
+        con.commit()
+
 
     def check_comment(self, comment):
        cur = self.db.cursor()
@@ -125,8 +134,14 @@ class Instances():
             'comment': comment,
             'location': location
         }
-        query = "UPDATE incidents SET comment=%(comment)s," \
-                "location=%(location)s WHERE incident_id='" + str(_id) + "' AND created_by='" + str(
-            current_user) + "'"
-        cur.execute(query, new_value)
+      
+        cur.execute("""UPDATE incidents SET comment=%s,location=%s WHERE incident_id=%s AND created_by=%s""", (comment,location, _id, current_user))
         con.commit()
+    #check status
+    def check_status(self):
+        con = self.db
+        cur = con.cursor()
+        cur.execute("SELECT status FROM incidents status='draft'")
+        data = cur.fetchone()
+        
+        return True
