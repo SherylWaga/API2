@@ -29,7 +29,7 @@ class Registration(Resource):
             if errors:
                 return make_response(jsonify(
                    {"status": 400, "data": errors}), 400)
-            if users().verify_membership(username, email):
+            if users().verify_membership(username, email, phonenumber, password):
                 return make_response(jsonify(
                    {"status": 400, "message": "user already exists"}), 400)
             users().save_user(firstname, lastname, email, phonenumber, username, password)
@@ -46,17 +46,23 @@ class Login (Resource):
         def post(self):
             username = request.json.get('username')
             password = request.json.get('password')
-            if users().fetch_user(username, password):
+            if not users().fetch_user():
+                return jsonify({'status_code': 404,
+                                'message': 'invalid username'})
+            if not users().validate_pass():
+                return jsonify({'status_code': 404,
+                                'message': 'invalid password.'})
+            
 
-                access_token = create_access_token(identity=username)
-                response = jsonify({'token': access_token,
-                                   "message": "Welcome " + username,
-                                   "status_code": 201})
-                return response
+            access_token = create_access_token(identity=username)
+            response = jsonify({'token': access_token,
+                                "message": "Welcome " + username,
+                                "status_code": 201})
+            return response
 
-            return make_response(jsonify({"status": 201, "data": [
-                    {"message": "Please sign up or check log in details"}]
-                    }), 201)
+            # return make_response(jsonify({"status": 201, "data": [
+            #         {"message": "Please sign up or check log in details"}]
+            #         }), 201)
 
         @jwt_required
         def current_user(self):
