@@ -7,6 +7,7 @@ from flask_jwt_extended import (create_access_token, create_refresh_token,
 from app.api.v2.models.instance_models import Instances
 from ....db_config import init_db
 from ..views.user_views import Login
+from ..models.user_models import UsersRole 
 
 app = Flask(__name__)
 
@@ -72,6 +73,9 @@ class Specific(Resource, Instances):
             if Instances().get_by_id(_id):
                 return jsonify({'status_code': 404,
                                 'message': ' Record does not exist'})
+            if Instances().check_status:
+                return jsonify({'status_code': 403,
+                                'message': 'You can only delete draft records.'})
             if not Instances().verification(_id):
                 return jsonify({'status_code': 403,
                                 'message': 'You can only delete your records.'})
@@ -84,8 +88,8 @@ class Specific(Resource, Instances):
                 })
             response.status_code = 200
             return resp
-
-    def put(self,_id):
+    @jwt_required
+    def put(self, _id):
         """Edit existing record"""
         if Login().current_logged(): 
             location = request.json.get('location')
@@ -93,10 +97,13 @@ class Specific(Resource, Instances):
             if Instances().get_by_id(_id):
                 return jsonify({'status_code': 404,
                                 'message': ' Record does not exist'})
+            if Instances().check_status:
+                return jsonify({'status_code': 403,
+                                'message': 'You can only edit draft records.'})
             if not Instances().verification(_id):
                 return jsonify({'status_code': 403,
                                 'message': 'You can only edit your records.'})
-            Instances().edit_incident, (_id)
+            Instances().edit_incident, (_id,comment, location)
             resp = jsonify(
                 {
                     'status_code':200,
@@ -104,3 +111,25 @@ class Specific(Resource, Instances):
 
                 })
             return resp
+      
+
+class Admin(Resource):
+
+    @jwt_required
+    def patch(self, _id):
+        """ Method for editing status """
+        current_user = get_jwt_identity()
+        y = UsersRole().user_role()
+        status = request.json.get('status')
+        if current_user != y:
+            return jsonify({'status_code': 403,
+                                    'message': 'Only admin is authorized'})
+
+        Instances().edit_by_admin(_id, status)
+        resp = jsonify(
+                    {
+                        'status_code':200,
+                        'message':'successfully updated',
+
+                    })
+        return resp

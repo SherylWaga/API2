@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 # local imports
 
 from ....db_config import init_db
@@ -36,7 +37,7 @@ class users():
         if password == value[6]:
             return True
         return False
-
+    #avoid duplicate entries
     def verify_membership(self, username, email):
         cur = self.db.cursor()
         cur.execute("SELECT * FROM users")
@@ -47,11 +48,16 @@ class users():
         return False
 
 
-class UsersRole():
-
+class UsersRole(users):
+        #verify admin
         def user_role(self):
             cur = self.db.cursor()
-            cur.execute("SELECT username FROM users WHERE is_admin = 'True'")
-            data = curr.fetchone()
+            cur.execute("SELECT username FROM users WHERE isadmin = 'true'")
+            data = cur.fetchone()
             for item in data:
+                print (data)
                 return item
+                
+            
+           
+            
