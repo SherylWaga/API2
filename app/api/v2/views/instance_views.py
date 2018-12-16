@@ -73,7 +73,7 @@ class Specific(Resource, Instances):
             if Instances().get_by_id(_id):
                 return jsonify({'status_code': 404,
                                 'message': ' Record does not exist'})
-            if Instances().check_status:
+            if not Instances().check_status:
                 return jsonify({'status_code': 403,
                                 'message': 'You can only delete draft records.'})
             if not Instances().verification(_id):
@@ -86,7 +86,7 @@ class Specific(Resource, Instances):
                     'message':'successfully deleted',
 
                 })
-            response.status_code = 200
+            
             return resp
     @jwt_required
     def put(self, _id):
@@ -97,7 +97,7 @@ class Specific(Resource, Instances):
             if Instances().get_by_id(_id):
                 return jsonify({'status_code': 404,
                                 'message': ' Record does not exist'})
-            if Instances().check_status:
+            if not  Instances().check_status:
                 return jsonify({'status_code': 403,
                                 'message': 'You can only edit draft records.'})
             if not Instances().verification(_id):
@@ -121,10 +121,18 @@ class Admin(Resource):
         current_user = get_jwt_identity()
         y = UsersRole().user_role()
         status = request.json.get('status')
+    
+        if Instances().get_by_id(_id):
+                return jsonify({'status_code': 404,
+                                'message': ' Record does not exist'})
+       
         if current_user != y:
             return jsonify({'status_code': 403,
                                     'message': 'Only admin is authorized'})
-
+                               
+       
+    
+          
         Instances().edit_by_admin(_id, status)
         resp = jsonify(
                     {
