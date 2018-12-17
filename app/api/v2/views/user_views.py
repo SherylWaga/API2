@@ -3,7 +3,7 @@ from flask import Flask, jsonify, json, request, make_response
 from flask_restful import Resource, Api
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 # local imports
-from app.api.v2.models.user_models import users
+from app.api.v2.models.user_models import users , UsersRole
 app = Flask(__name__)
 
 api = Api(app) 
@@ -21,25 +21,31 @@ class Registration(Resource):
             phonenumber = request.get_json()['phonenumber']
             username = request.get_json()['username']
             password = request.get_json()['password']
-            
+            validator = "@"
+            validator2 = ".com"
             errors = {}
             for key, value in request.get_json().items():
                 if not value.strip():
                     errors[key] = "cannot be empty"
             if errors:
                 return make_response(jsonify(
-                   {"status": 400, "data": errors}), 400)
+                   {"status": 404, "data": errors}), 404)
+                
+            if validator not in email or validator2 not in email:
+                return make_response(jsonify(
+                   {"status": 404, "message": "invalid email"}), 404)
+                        
             if users().verify_membership(username, email, phonenumber, password):
                 return make_response(jsonify(
-                   {"status": 400, "message": "user already exists"}), 400)
+                   {"status": 404, "message": "user already exists"}), 404)
             users().save_user(firstname, lastname, email, phonenumber, username, password)
             return make_response(jsonify(
                    {"status": 200, "data": [
                     {"message": "Registration successful"}]}), 200)
         except:
             return make_response(jsonify(
-                {"status": 400, "data": [
-                    {"message": "Required field or fields"}]}), 400)  
+                {"status": 404, "data": [
+                    {"message": "Required field or fields"}]}), 404)  
 
 
 class Login (Resource):
@@ -54,15 +60,11 @@ class Login (Resource):
                                 'message': 'invalid password.'})
             
 
-            access_token = create_access_token(identity=username)
-            response = jsonify({'token': access_token,
+            token = create_access_token(identity=username)
+            response = jsonify({'token': token,
                                 "message": "Welcome " + username,
                                 "status_code": 201})
             return response
-
-            # return make_response(jsonify({"status": 201, "data": [
-            #         {"message": "Please sign up or check log in details"}]
-            #         }), 201)
 
         @jwt_required
         def current_user(self):
@@ -72,3 +74,21 @@ class Login (Resource):
         @jwt_required
         def current_logged(self):
             return True
+    
+class Alogin (Resource):
+        def post(self):
+            username = request.json.get('username')
+            password = request.json.get('password')
+            if UsersRole().admin_role:
+            
+
+                token = create_access_token(identity=username)
+                response = jsonify({'token': token,
+                                    "message": "Welcome " + username,
+                                    "status_code": 201})
+                return response
+            
+            return jsonify({'status_code': 403,
+                                'message': 'admin only'})
+
+      

@@ -49,12 +49,12 @@ def create_tables():
         cur.execute(query)
     conn.commit()
     return queries
-
-
+        
+        
 def admin():
         conn = connection(url)
         cur = conn.cursor()
-
+        
         firstname = 'jane'
         lastname = 'ranger'
         email = 'admin@gmail.com'
