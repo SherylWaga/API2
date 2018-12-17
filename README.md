@@ -4,6 +4,8 @@ iReporter enables any/every citizen to bring any form of corruption to the notic
 
 [![Coverage Status](https://coveralls.io/repos/github/SherylWaga/API2/badge.svg?branch=develop)](https://coveralls.io/github/SherylWaga/API2?branch=develop)
 
+[![Build Status](https://travis-ci.org/SherylWaga/API2.svg?branch=develop)](https://travis-ci.org/SherylWaga/API2)
+
 # Prerequisites
 Things you need to run the application;
 * Requirements
