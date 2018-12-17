@@ -8,6 +8,7 @@ bcrypt==3.1.4
 binary==1.0.0
 cffi==1.11.5
 Click==7.0git 
+coveralls==1.5.1
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
 Flask-JWT-Extended==3.14.0
