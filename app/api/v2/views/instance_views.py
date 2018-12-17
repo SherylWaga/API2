@@ -30,6 +30,7 @@ class Create_incident(Resource, Instances):
             if errors:
                 return make_response(jsonify(
                    {"status": 400, "data": errors}), 400)
+            
             if  Instances().check_comment(comment):
                 return make_response(jsonify(
                 {"status": 400, "data": [

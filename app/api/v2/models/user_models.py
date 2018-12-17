@@ -18,9 +18,9 @@ class users():
             'firstname': firstname,
             'lastname': lastname,
             'email': email,
-            'phonenumber': bcrypt.generate_password_hash(password).decode('utf-8'),
+            'phonenumber': phonenumber,
             'username': username,
-            'password': password
+            'password': bcrypt.generate_password_hash(password).decode('utf-8')
 
         }
         query = """INSERT INTO users(firstname,lastname,email,phonenumber,username,password)
@@ -62,13 +62,7 @@ class users():
         pword = convert_data[4]
         if bcrypt.check_password_hash(pword, password):
             return True
-        
-    def validate_email(self):
-        email = request.json.get('email')
-        symbol='@'
-        if symbol not in email:
-            return True
-
+   
 class UsersRole(users):
         #verify admin
         def user_role(self):
@@ -78,6 +72,14 @@ class UsersRole(users):
             for item in data:
                 print (data)
                 return item
+        
+        def admin_role(self,username):
+            cur = self.db.cursor()
+            cur.execute("SELECT username FROM users WHERE isadmin = 'true'")
+            data = cur.fetchone()
+            for item in data:
+                if item == username:
+                   return True
                 
             
            
