@@ -1,5 +1,6 @@
 # iReporter Endpoints
 iReporter enables any/every citizen to bring any form of corruption to the notice of appropriate authorities and the general public. Users can also report on things that needs government intervention
+[![Coverage Status](https://coveralls.io/repos/github/SherylWaga/API2/badge.svg?branch=develop)](https://coveralls.io/github/SherylWaga/API2?branch=develop)
 
 # Prerequisites
 Things you need to run the application;
