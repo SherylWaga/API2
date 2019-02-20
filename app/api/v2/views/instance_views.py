@@ -15,12 +15,12 @@ app = Flask(__name__)
 class Create_incident(Resource, Instances):
     @jwt_required
     def post(self):
-            title = request.get_json()['title']
-            comment = request.get_json()['comment']
-            instance_type = request.get_json()['instance_type']
-            location = request.get_json()['location']
-            images = request.get_json()['images']
-            videos = request.get_json()['videos']
+            title = request.get_json()['title'].lower()
+            comment = request.get_json()['comment'].lower()
+            instance_type = request.get_json()['instance_type'].lower()
+            location = request.get_json()['location'].lower()
+            images = request.get_json()['images'].lower()
+            videos = request.get_json()['videos'].lower()
             created_by = get_jwt_identity()
         
             errors = {}
@@ -104,7 +104,7 @@ class Specific(Resource, Instances):
             if not Instances().verification(_id):
                 return jsonify({'status_code': 403,
                                 'message': 'You can only edit your records.'})
-            Instances().edit_incident, (_id,comment, location)
+            Instances().edit_incident(_id)
             resp = jsonify(
                 {
                     'status_code':200,

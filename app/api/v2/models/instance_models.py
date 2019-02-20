@@ -130,6 +130,8 @@ class Instances():
         current_user = Login().current_user()
         con = self.db
         cur = con.cursor()
+        location = request.json.get('location')
+        comment = request.json.get('comment')   
         payload = { 
             'comment': comment,
             'location': location

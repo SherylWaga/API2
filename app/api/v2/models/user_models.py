@@ -80,7 +80,3 @@ class UsersRole(users):
             for item in data:
                 if item == username:
                    return True
-                
-            
-           
-            
