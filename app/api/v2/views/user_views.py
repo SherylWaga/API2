@@ -1,4 +1,3 @@
-
 from flask import Flask, jsonify, json, request, make_response
 from flask_restful import Resource, Api
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
@@ -90,5 +89,3 @@ class Alogin (Resource):
             
             return jsonify({'status_code': 403,
                                 'message': 'admin only'})
-
-      
